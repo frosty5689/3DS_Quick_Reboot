@@ -1,85 +1,63 @@
 BasicInfo:
-  Title                   : "CtrApp"
+  Title                   : "QuickReboot"
   CompanyCode             : "00"
-  ProductCode             : "CTR-P-CTAP"
+  ProductCode             : "CTR-Q-RBOOT"
   ContentType             : Application # Application / SystemUpdate / Manual / Child / Trial
   Logo                    : Nintendo # Nintendo / Licensed / Distributed / iQue / iQueForSystem
 
-Rom:
-  # Specifies the root path of the file system to include in the ROM.
-  #HostRoot                : "romfs"
-
-
 TitleInfo:
-  UniqueId                : 0x1349 # This was/is the first real homebrew app. I hope this TID range is not used by any retail game/app.
+  UniqueId                : 0xB007 # I hope this TID range is not used by any retail game/app.
   Category                : Application # Application / SystemApplication / Applet / Firmware / Base / DlpChild / Demo / Contents / SystemContents / SharedContents / AddOnContents / Patch / AutoUpdateContents
-  
+
 CardInfo:
   MediaSize               : 128MB # 128MB / 256MB / 512MB / 1GB / 2GB / 4GB
   MediaType               : Card1 # Card1 / Card2
-  CardDevice              : NorFlash # NorFlash(Pick this if you use savedata) / None
-  
+  CardDevice              : None # NorFlash (Pick this if you use savedata) / None
 
 Option:
+  UseOnSD                 : true # true if App is to be installed to SD
   FreeProductCode         : true # Removes limitations on ProductCode
   MediaFootPadding        : false # If true CCI files are created with padding
   EnableCrypt             : true # Enables encryption for NCCH and CIA
   EnableCompress          : true # Compresses exefs code
 
-ExeFs: # these are the program segments from the ELF, check your elf for the appropriate segment names
-  ReadOnly: 
-   - .rodata
-   - RO
-  ReadWrite: 
-   - .data
-   - RO
-  Text: 
-   - .init
-   - .text
-   - STUP_ENTRY
-   
-PlainRegion: # only used with SDK ELFs 
- - .module_id
-  
-AccessControlInfo:
-  #UseExtSaveData : true
-  #ExtSaveDataId: 0xff3ff
-  #UseExtendedSaveDataAccessControl: true
-  #AccessibleSaveDataIds: [0x101, 0x202, 0x303, 0x404, 0x505, 0x606]
-
-SystemControlInfo:
-  SaveDataSize: 128KB
-  RemasterVersion: 0
-  StackSize: 0x40000
-  
 # DO NOT EDIT BELOW HERE OR PROGRAMS WILL NOT LAUNCH (most likely)
-
 AccessControlInfo:
   FileSystemAccess:
    - Debug
    - DirectSdmc
    - DirectSdmcWrite
-   
+
   IdealProcessor                : 0
   AffinityMask                  : 1
-  
+
   Priority                      : 16
-   
+
   MaxCpu                        : 0x9E # Default
-  
+
+  DisableDebug                  : true
+  EnableForceDebug              : false
+  CanWriteSharedPage            : true
+  CanUsePrivilegedPriority      : false
+  CanUseNonAlphabetAndNumber    : true
+  PermitMainFunctionArgument    : true
+  CanShareDeviceMemory          : true
+  RunnableOnSleep               : false
+  SpecialMemoryArrange          : true
+
   CoreVersion                   : 2
   DescVersion                   : 2
-  
+
   ReleaseKernelMajor            : "02"
-  ReleaseKernelMinor            : "33" 
+  ReleaseKernelMinor            : "33"
   MemoryType                    : Application
   HandleTableSize: 512
-  IORegisterMapping: 
+  IORegisterMapping:
    - 1ff50000-1ff57fff
    - 1ff70000-1ff77fff
-  MemoryMapping: 
+  MemoryMapping:
    - 1f000000-1f5fffff:r
-  SystemCallAccess: 
+  SystemCallAccess:
     ArbitrateAddress: 34
     Break: 60
     CancelTimer: 28
@@ -132,7 +110,7 @@ AccessControlInfo:
     WaitSynchronization1: 36
     WaitSynchronizationN: 37
   InterruptNumbers:
-  ServiceAccessControl: 
+  ServiceAccessControl:
    - APT:U
    - $hioFIO
    - $hostio0
@@ -161,10 +139,14 @@ AccessControlInfo:
    - y2r:u
    - ldr:ro
    - ir:USER
-  
-   
+
+
 SystemControlInfo:
-  Dependency: 
+  SaveDataSize: 0KB # It doesn't use any save data.
+  RemasterVersion: 2
+  StackSize: 0x40000
+  # JumpId: 0
+  Dependency:
     ac: 0x0004013000002402L
     am: 0x0004013000001502L
     boss: 0x0004013000003402L
@@ -195,7 +177,7 @@ SystemControlInfo:
     socket: 0x0004013000002e02L
     spi: 0x0004013000002302L
     ssl: 0x0004013000002f02L
-CommonHeaderKey: 
+CommonHeaderKey:
   D: |
     jL2yO86eUQnYbXIrzgFVMm7FVze0LglZ2f5g+c42hWoEdnb5BOotaMQPBfqt
     aUyAEmzQPaoi/4l4V+hTJRXQfthVRqIEx27B84l8LA6Tl5Fy9PaQaQ+4yRfP

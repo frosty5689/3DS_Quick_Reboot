@@ -1,97 +1,40 @@
 BasicInfo:
-  Title                   : "CtrApp"
+  Title                   : "QuickReboot"
   CompanyCode             : "00"
-  ProductCode             : "CTR-P-CTAP"
+  ProductCode             : "CTR-Q-RBOOT"
   ContentType             : Application # Application / SystemUpdate / Manual / Child / Trial
   Logo                    : Nintendo # Nintendo / Licensed / Distributed / iQue / iQueForSystem
 
-Rom:
-  # Specifies the root path of the file system to include in the ROM.
-  # HostRoot                : "$(ROMFS_ROOT)"
-
-
 TitleInfo:
-  UniqueId                : 0xf0023 # This was/is the first real homebrew app. I hope this TID range is not used by any retail game/app.
+  UniqueId                : 0xB007 # I hope this TID range is not used by any retail game/app.
   Category                : Application # Application / SystemApplication / Applet / Firmware / Base / DlpChild / Demo / Contents / SystemContents / SharedContents / AddOnContents / Patch / AutoUpdateContents
 
 CardInfo:
-  MediaSize               : 512MB # 128MB / 256MB / 512MB / 1GB / 2GB / 4GB / 8GB / 16GB / 32GB
+  MediaSize               : 128MB # 128MB / 256MB / 512MB / 1GB / 2GB / 4GB
   MediaType               : Card1 # Card1 / Card2
-  CardDevice              : NorFlash # NorFlash(Pick this if you use savedata) / None
-  
+  CardDevice              : None # NorFlash (Pick this if you use savedata) / None
 
 Option:
   UseOnSD                 : true # true if App is to be installed to SD
-  EnableCompress          : true # Compresses exefs code
   FreeProductCode         : true # Removes limitations on ProductCode
-  EnableCrypt             : false # Enables encryption for NCCH and CIA
   MediaFootPadding        : false # If true CCI files are created with padding
+  EnableCrypt             : false # Enables encryption for NCCH and CIA
+  EnableCompress          : true # Compresses exefs code
 
-ExeFs: # these are the program segments from the ELF, check your elf for the appropriate segment names
-  ReadOnly: 
-   - .rodata
-   - RO
-  ReadWrite: 
-   - .data
-   - RO
-  Text: 
-   - .init
-   - .text
-   - STUP_ENTRY
-   
-PlainRegion: # only used with SDK ELFs 
- # - .module_id
-  
+# DO NOT EDIT BELOW HERE OR PROGRAMS WILL NOT LAUNCH (most likely)
 AccessControlInfo:
-  # UseOtherVariationSaveData : true
-  # UseExtSaveData : true
-  # ExtSaveDataId: 0xffffffff
-  # SystemSaveDataId1: 0x220
-  # SystemSaveDataId2: 0x00040010
-  # OtherUserSaveDataId1: 0x220
-  # OtherUserSaveDataId2: 0x330
-  # OtherUserSaveDataId3: 0x440
-  # UseExtendedSaveDataAccessControl: true
-  # AccessibleSaveDataIds: [0x101, 0x202, 0x303, 0x404, 0x505, 0x606]
   FileSystemAccess:
-   # - CategorySystemApplication
-   # - CategoryHardwareCheck
-   # - CategoryFileSystemTool
    - Debug
-   # - TwlCardBackup
-   # - TwlNandData
-   # - Boss
    - DirectSdmc
-   # - Core
-   # - CtrNandRo
-   # - CtrNandRw
-   # - CtrNandRoWrite
-   # - CategorySystemSettings
-   # - CardBoard
-   # - ExportImportIvs
-   # - DirectSdmcWrite
-   # - SwitchCleanup
-   # - SaveDataMove
-   # - Shop
-   # - Shell
-   # - CategoryHomeMenu
-  IoAccessControl:
-   # - FsMountNand
-   # - FsMountNandRoWrite
-   # - FsMountTwln
-   # - FsMountWnand
-   # - FsMountCardSpi
-   # - UseSdif3
-   # - CreateSeed
-   # - UseCardSpi
-   
+   - DirectSdmcWrite
+
   IdealProcessor                : 0
   AffinityMask                  : 1
-  
+
   Priority                      : 16
-   
+
   MaxCpu                        : 0x9E # Default
-  
+
   DisableDebug                  : true
   EnableForceDebug              : false
   CanWriteSharedPage            : true
@@ -101,20 +44,20 @@ AccessControlInfo:
   CanShareDeviceMemory          : true
   RunnableOnSleep               : false
   SpecialMemoryArrange          : true
-  
+
   CoreVersion                   : 2
   DescVersion                   : 2
-  
+
   ReleaseKernelMajor            : "02"
-  ReleaseKernelMinor            : "33" 
-  MemoryType                    : Application # Application / System / Base
+  ReleaseKernelMinor            : "33"
+  MemoryType                    : Application
   HandleTableSize: 512
-  IORegisterMapping: 
+  IORegisterMapping:
    - 1ff50000-1ff57fff
    - 1ff70000-1ff77fff
-  MemoryMapping: 
+  MemoryMapping:
    - 1f000000-1f5fffff:r
-  SystemCallAccess: 
+  SystemCallAccess:
     ArbitrateAddress: 34
     Break: 60
     CancelTimer: 28
@@ -167,7 +110,7 @@ AccessControlInfo:
     WaitSynchronization1: 36
     WaitSynchronizationN: 37
   InterruptNumbers:
-  ServiceAccessControl: 
+  ServiceAccessControl:
    - APT:U
    - $hioFIO
    - $hostio0
@@ -196,14 +139,14 @@ AccessControlInfo:
    - y2r:u
    - ldr:ro
    - ir:USER
-  
-   
+
+
 SystemControlInfo:
   SaveDataSize: 0KB # It doesn't use any save data.
   RemasterVersion: 2
   StackSize: 0x40000
   # JumpId: 0
-  Dependency: 
+  Dependency:
     ac: 0x0004013000002402L
     am: 0x0004013000001502L
     boss: 0x0004013000003402L

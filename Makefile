@@ -32,9 +32,9 @@ SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 
-APP_TITLE       := Quick Reboot
-APP_DESCRIPTION := Tap to Reboot
-APP_AUTHOR      := AlbertoSONIC
+APP_TITLE       :=	Quick Reboot
+APP_DESCRIPTION :=	Tap to Reboot
+APP_AUTHOR      :=	AlbertoSONIC
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -117,6 +117,8 @@ else
 	export APP_ICON := $(TOPDIR)/$(ICON)
 endif
 
+MAKEROM	:=	$(shell which makerom)
+
 ifeq ($(strip $(NO_SMDH)),)
 	export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
 endif
@@ -124,17 +126,30 @@ endif
 .PHONY: $(BUILD) clean all
 
 #---------------------------------------------------------------------------------
-all: $(BUILD)
+all: $(BUILD) $(TARGET).cia $(TARGET).3ds
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
+$(TARGET).3ds: $(BUILD)
+	@echo building 3ds...
+	@makerom -f cci -rsf resources/gw_workaround.rsf -target d -exefslogo \
+		-elf $(TARGET).elf -icon resources/icon.bin \
+		-banner resources/banner.bin -o $(TARGET).3ds
+
+#---------------------------------------------------------------------------------
+$(TARGET).cia: $(BUILD)
+	@echo building cia...
+	@makerom -f cia -o $(TARGET).cia -elf $(TARGET).elf \
+		-rsf resources/build_cia.rsf -icon resources/icon.bin \
+		-banner resources/banner.bin -exefslogo -target t
+
+#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf
-
 
 #---------------------------------------------------------------------------------
 else
@@ -151,26 +166,6 @@ $(OUTPUT).3dsx	:	$(OUTPUT).elf
 endif
 
 $(OUTPUT).elf	:	$(OFILES)
-
-#---------------------------------------------------------------------------------
-# you need a rule like this for each extension you use as binary data
-#---------------------------------------------------------------------------------
-%.bin.o	:	%.bin
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@$(bin2o)
-
-# WARNING: This is not the right way to do this! TODO: Do it right!
-#---------------------------------------------------------------------------------
-%.vsh.o	:	%.vsh
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@python $(AEMSTRO)/aemstro_as.py $< ../$(notdir $<).shbin
-	@bin2s ../$(notdir $<).shbin | $(PREFIX)as -o $@
-	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(notdir $<).shbin | tr . _)`.h
-	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(notdir $<).shbin | tr . _)`.h
-	@echo "extern const u32" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(notdir $<).shbin | tr . _)`.h
-	@rm ../$(notdir $<).shbin
 
 -include $(DEPENDS)
 
