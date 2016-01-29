@@ -152,10 +152,15 @@ $(TARGET).cia: $(BUILD)
 		-banner resources/banner.bin -exefslogo -target t
 
 #---------------------------------------------------------------------------------
+release: all
+	@rm -f $(TARGET).zip
+	@zip -9 $(TARGET).zip $(TARGET).*
+
+#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf \
-		$(TARGET).cia $(TARGET).3ds
+		$(TARGET).cia $(TARGET).3ds $(TARGET).zip
 
 #---------------------------------------------------------------------------------
 else
