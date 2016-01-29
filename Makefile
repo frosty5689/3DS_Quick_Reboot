@@ -123,14 +123,14 @@ ifeq ($(strip $(NO_SMDH)),)
 	export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
 endif
 
-.PHONY: $(BUILD) clean all release
+.PHONY: $(BUILD) 3ds cia clean all release
 
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(MAKEROM)),)
 all:
 	@echo "makerom not found! Please install it first!"
 else
-all: $(BUILD) $(TARGET).cia $(TARGET).3ds
+all: $(BUILD) cia 3ds
 endif
 
 $(BUILD):
@@ -138,14 +138,14 @@ $(BUILD):
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
-$(TARGET).3ds: $(TARGET).elf
+3ds: $(BUILD)
 	@echo building 3ds...
 	@$(MAKEROM) -f cci -o $(TARGET).3ds -elf $(TARGET).elf \
 		-rsf resources/build_3ds.rsf -icon resources/icon.bin \
 		-banner resources/banner.bin -exefslogo -target d
 
 #---------------------------------------------------------------------------------
-$(TARGET).cia: $(TARGET).elf
+cia: $(BUILD)
 	@echo building cia...
 	@$(MAKEROM) -f cia -o $(TARGET).cia -elf $(TARGET).elf \
 		-rsf resources/build_cia.rsf -icon resources/icon.bin \
