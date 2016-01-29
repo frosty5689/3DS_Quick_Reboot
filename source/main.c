@@ -1,41 +1,35 @@
 #include <3ds.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "main.h"
+
+void __appInit()
+{
+    // Initialize services
+    srvInit();
+    aptInit();
+    hidInit();
+    gfxInitDefault();
+}
+
+void __appExit()
+{
+    // Exit services
+    gfxExit();
+    hidExit();
+    aptExit();
+    srvExit();
+}
+
+
 
 int main()
 {
-	// Initialize services
-	srvInit();
-	aptInit();
-	hidInit(NULL);
-	gfxInitDefault();
-
-    u32 input;
-	// Main loop
-	while (aptMainLoop())
-	{
-		
-		//HID Input
-		hidScanInput();
-		input = hidKeysDown();
-
-		//Abort reboot if L is pressed
-		if (input & KEY_L) break;
-		else
-		{
-			//Reboot Code
-			aptOpenSession();
-			APT_HardwareResetAsync(NULL);
-			aptCloseSession();
-		}
-	}
-
-	// Exit services
-	gfxExit();
-	hidExit();
-	aptExit();
-	srvExit();
-	return 0;
+    // HID Input
+    hidScanInput();
+    // Abort reboot if L is pressed
+    if (hidKeysDown() != KEY_L) {
+	aptOpenSession();
+	APT_HardwareResetAsync();
+	aptCloseSession();
+    }
+    return 0;
 }
