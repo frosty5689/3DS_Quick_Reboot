@@ -126,16 +126,18 @@ endif
 .PHONY: $(BUILD) 3ds cia clean all release
 
 #---------------------------------------------------------------------------------
-ifeq ($(strip $(MAKEROM)),)
-all:
-	@echo "makerom not found! Please install it first!"
-else
 all: $(BUILD) cia 3ds
-endif
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+#---------------------------------------------------------------------------------
+ifeq ($(strip $(MAKEROM)),)
+cia:
+3ds:
+	@echo "makerom not found! Please install it first!"
+else
 
 #---------------------------------------------------------------------------------
 3ds: $(BUILD)
@@ -150,6 +152,7 @@ cia: $(BUILD)
 	@$(MAKEROM) -f cia -o $(TARGET).cia -elf $(TARGET).elf \
 		-rsf resources/build_cia.rsf -icon resources/icon.bin \
 		-banner resources/banner.bin -exefslogo -target t
+endif
 
 #---------------------------------------------------------------------------------
 release: all
