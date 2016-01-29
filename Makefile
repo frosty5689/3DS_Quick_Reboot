@@ -126,7 +126,12 @@ endif
 .PHONY: $(BUILD) clean all
 
 #---------------------------------------------------------------------------------
+ifeq ($(strip $(MAKEROM)),)
+all:
+	@echo "makerom not found! Please install it first!"
+else
 all: $(BUILD) $(TARGET).cia $(TARGET).3ds
+endif
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
@@ -135,14 +140,14 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 $(TARGET).3ds: $(BUILD)
 	@echo building 3ds...
-	@makerom -f cci -rsf resources/gw_workaround.rsf -target d -exefslogo \
+	@$(MAKEROM) -f cci -rsf resources/gw_workaround.rsf -target d -exefslogo \
 		-elf $(TARGET).elf -icon resources/icon.bin \
 		-banner resources/banner.bin -o $(TARGET).3ds
 
 #---------------------------------------------------------------------------------
 $(TARGET).cia: $(BUILD)
 	@echo building cia...
-	@makerom -f cia -o $(TARGET).cia -elf $(TARGET).elf \
+	@$(MAKEROM) -f cia -o $(TARGET).cia -elf $(TARGET).elf \
 		-rsf resources/build_cia.rsf -icon resources/icon.bin \
 		-banner resources/banner.bin -exefslogo -target t
 
