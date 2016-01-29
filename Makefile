@@ -140,9 +140,9 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 $(TARGET).3ds: $(BUILD)
 	@echo building 3ds...
-	@$(MAKEROM) -f cci -rsf resources/gw_workaround.rsf -target d -exefslogo \
-		-elf $(TARGET).elf -icon resources/icon.bin \
-		-banner resources/banner.bin -o $(TARGET).3ds
+	@$(MAKEROM) -f cci -o $(TARGET).3ds -elf $(TARGET).elf \
+		-rsf resources/build_3ds.rsf -icon resources/icon.bin \
+		-banner resources/banner.bin -exefslogo -target d
 
 #---------------------------------------------------------------------------------
 $(TARGET).cia: $(BUILD)
@@ -154,7 +154,8 @@ $(TARGET).cia: $(BUILD)
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf
+	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).smdh $(TARGET).elf \
+		$(TARGET).cia $(TARGET).3ds
 
 #---------------------------------------------------------------------------------
 else
